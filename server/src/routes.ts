@@ -53,8 +53,22 @@ async function router(app: FastifyInstance) {
       },
     });
 
+    const day = await prisma.day.findUnique({
+      where: {
+        date: parsedDate.toDate(),
+      },
+      include: {
+        dayHabits: true,
+      },
+    });
+
+    const completedHabits = day?.dayHabits.map((habit) => {
+      return habit.habit_id;
+    });
+
     return {
       possibleHabits,
+      completedHabits,
     };
   });
 }
